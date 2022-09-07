@@ -1,6 +1,10 @@
 #!/bin/bash
 <<<<<<< HEAD
+<<<<<<< HEAD
 mkdir/tmp/my_first_directory
 =======
 mkdir/tmp/my_first_directory  
 >>>>>>> origin/main
+=======
+mkdir/tmp/my_first_directory  
+>>>>>>> 12ecf2ae6d78e3ff18f02f7af701b486c66addec
