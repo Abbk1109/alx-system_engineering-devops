@@ -1,2 +1,6 @@
 #!/bin/bash
+<<<<<<< HEAD
 echo "pwd"
+=======
+"pwd"
+>>>>>>> 7bdf900de4108e8c4752aa953e37d9e16e5e2a68
