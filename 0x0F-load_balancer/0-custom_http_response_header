@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# configures and starts web server 2
+STRING="Hello World!"
+ERRORMESSAGE="Ceci n'est pas une page"
+
+# colors
+blue='\e[1;34m'
+green='\e[1;32m'
+reset='\033[0m'
+
+echo -e "\n\t${blue}Updating and upgrading packages...${reset}\n"
+sudo apt-get -y update && sudo apt-get -y upgrade
+
+echo -e "\n\t${blue}Installing Nginx...${reset}\n\t"
+sudo apt-get -y install nginx
+
+echo -e "\n\t${blue}Configuring Nginx...${reset}\n\t"
+sudo ufw allow 'Nginx HTTP'
+sudo mkdir -p /var/www/html /var/www/error
+sudo chmod -R 755 /var/www
+
+echo "$STRING" | sudo tee /var/www/html/index.html > /dev/null
+echo "$ERRORMESSAGE" | sudo tee /var/www/error/404.html > /dev/null
+
+CONFIG=$(cat <<'EOF'
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    add_header X-Served-By $HOSTNAME;
+
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    location /redirect_me {
+        return 301 https://www.google.com/;
+    }
+    error_page 404 /404.html;
+    location = /404.html {
+        root /var/www/error;
+        internal;
+    }
+}
+EOF
+)
+
+echo "$CONFIG" | sudo tee /etc/nginx/sites-enabled/default > /dev/null
+sudo service nginx restart
+echo -e "\n\t${green}Completed.${reset} ✅\n"
